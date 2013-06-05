@@ -96,7 +96,7 @@ void initInterrupts(void) {
     INTCON2bits.INT3EP = 0;
 
     /* Set timers interrupts */
-    IEC0bits.T1IE = 1;  //timer 1
+    IEC0bits.T1IE = 1; //timer 1
     IEC0bits.T2IE = 1; //timer 2
     IEC1bits.T4IE = 1; //timer 4
     IEC2bits.T6IE = 1; //timer 6
@@ -125,11 +125,11 @@ void initTimers(void) {
 
     // Init timer 1
     T1CONbits.TON = 0; //stop
-    T1CONbits.TCKPS = 1; //1:1,8,64,256 (0,1,2,3) (2bits)
+    T1CONbits.TCKPS = 3; //1:1,8,64,256 (0,1,2,3) (2bits)
     T1CONbits.TCS = 0; //internal clock
     T1CONbits.TGATE = 0; //not working in gated mode (ignored if tcs = 1)
     T1CONbits.TSIDL = 1; //not working in idle mode
-    T1CONbits.TSYNC = 1;    //syncrhonous
+    T1CONbits.TSYNC = 1; //syncrhonous
     //TMR1 = 0;
     PR1 = TIME1_TRIGGER_MOTOR; //contador a 0
 
@@ -188,11 +188,13 @@ void initSensors(void) {
      * RA13 = INT2
      * RA14 = INT3
      * RF6  = INT0 */
-    TRISA = 0;
-    TRISAbits.TRISA12 = TRISAbits.TRISA13 = TRISAbits.TRISA14 = 1;
-    TRISF = 0;
-    TRISFbits.TRISF6 = 1;
-    TRISBbits.TRISB0 = 0;
+//    TRISA = 0;
+    ODCAbits.ODCA5 = 1;
+    LATAbits.LATA5 = 0;
+//    TRISAbits.TRISA12 = TRISAbits.TRISA13 = TRISAbits.TRISA14 = 1;
+//    TRISF = 0;
+//    TRISFbits.TRISF6 = 1;
+//    TRISBbits.TRISB0 = 0;
 }
 
 /******************************************************************************/
@@ -202,9 +204,9 @@ void initSensors(void) {
 /* <Initialize variables in user.h and insert code for user algorithms.> */
 
 void InitApp(void) {
-    initInterrupts();
-
-    initTimers();
+//    initInterrupts();
+//
+//    initTimers();
 
     initSensors();
 }
@@ -214,19 +216,32 @@ void moveMotor(unsigned int grade) {
 }
 
 void Loop(void) {
-    T1CONbits.TON = 1;
-    TRISBbits.TRISB0 = 0;
-    PORTBbits.RB0 = 0;
+//    T1CONbits.TON = 1;
+//    TRISBbits.TRISB0 = 0;
+//    TRISFbits.TRISF4 = 0;
+////    TRISAbits.TRISA2 = 0;
+////    TRISAbits.TRISA5 = 0;
+//    TRISAbits.TRISA14 = 1;
+//    TRISDbits.TRISD0 = 0;
+//    PORTBbits.RB0 = 1;
+//    PORTFbits.RF4 = 1;
+//    PORTAbits.RA2 = 1;
+//    PORTAbits.RA5 = 1;
+//    PORTDbits.RD0 = 1;
+    TRISAbits.TRISA5 = 1;
+//    PORTAbits.RA5 = 0;
 
+    //ra14 echo
+    //ra5  trigger
     //PR1 = TIME1_TRIGGER_MOTOR;
     while (ME_COMES_LOS_HUEVOS) {
-//        if (SensorsFinished >= NUM_SENSORS) {
-//            SensorsFinished = 0;
-//            ponMotor();
-//            grado = (grado + GIR) % 90; //si motor demasiado lento hacerlo otra manera
-//            moveMotor(grado);
-            // Encender timer1
-//        }
+        //        if (SensorsFinished >= NUM_SENSORS) {
+        //            SensorsFinished = 0;
+        //            ponMotor();
+        //            grado = (grado + GIR) % 90; //si motor demasiado lento hacerlo otra manera
+        //            moveMotor(grado);
+        // Encender timer1
+        //        }
     }
 }
 

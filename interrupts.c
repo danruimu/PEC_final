@@ -136,50 +136,58 @@ extern unsigned int grado;
 //    MOTOR, TRIGGER, ESPERA
 //};
 //enum modoTimer1 modo = MOTOR;
-#define modoTimer1 int
+
 #define MOTOR   0
 #define TRIGGER 1
 #define ESPERA  2
 
-modoTimer1 modo = MOTOR;
+unsigned char modoTimer1 = MOTOR;
 
 void ponMotor() {
     T1CONbits.TON = 0;
-    modo = MOTOR;
+    modoTimer1 = MOTOR;
     PR1 = TIME1_TRIGGER_MOTOR;
     TMR1 = 0;
     T1CONbits.TON = 1;
 }
 
+
 /* Timer 1 interrupt service routine */
 void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
-//void __attribute__((interrupt, auto_psv)) _T1Interrupt(void) {
     T1CONbits.TON = 0;
     IFS0bits.T1IF = 0;
-    TRISBbits.TRISB0 = 0;
-//    if(PORTBbits.RB0 == 0) {
-//        PORTBbits.RB0 = 1;
-//    } else {
-//        PORTBbits.RB0 = 0;
-//    }
 
-//    switch (modo) {
-//        case MOTOR:
-//            modo = TRIGGER;
-//            PR1 = TIME1_TRIGGER_SENSOR;
-//
-//            break;
-//        case TRIGGER:
-//            modo = ESPERA;
-//            PR1 = TIME1_MAX_SENSORS;
-//            break;
-//        case ESPERA:
-//            modo = MOTOR;
-//            PR1 = TIME1_TRIGGER_MOTOR;
-//
-//            break;
-//    }
-//    TMR1 = 0;
+    switch (modoTimer1) {
+        case MOTOR:
+            modoTimer1 = TRIGGER;
+            PR1 = TIME1_TRIGGER_SENSOR;
+            T1CONbits.TCKPS = 1;
+//            PORTAbits.RA5 = 0;
+            PORTBbits.RB0 = 1;
+            PORTFbits.RF4 = 0;
+            PORTAbits.RA2 = 0;
+            PORTDbits.RD0 = 0;
+            break;
+        case TRIGGER:
+            modoTimer1 = ESPERA;
+            T1CONbits.TCKPS = 3;
+            PR1 = MAX_TIMER_SENS;
+           // PORTAbits.RA5 = 0;
+            PORTBbits.RB0 = 0;
+            PORTFbits.RF4 = 1;
+            PORTAbits.RA2 = 0;
+            PORTDbits.RD0 = 0;
+            break;
+        case ESPERA:
+            modoTimer1 = MOTOR;
+            PR1 = MAX_TIMER_SENS;
+            PORTBbits.RB0 = 1;
+            PORTFbits.RF4 = 1;
+            PORTAbits.RA2 = 1;
+            PORTDbits.RD0 = 1;
+            break;
+    }
+    TMR1 = 0;
     T1CONbits.TON = 1;
 }
 
@@ -261,14 +269,17 @@ void __attribute__((interrupt, auto_psv)) _INT2Interrupt(void) {
     T6CONbits.TON = INTCON2bits.INT2EP;
 }
 
+//ECHO
 /* External 3 interrupt service routine */
 void __attribute__((interrupt, auto_psv)) _INT3Interrupt(void) {
     IFS3bits.T8IF = 0;
     IFS3bits.INT3IF = 0;
     if (INTCON2bits.INT3EP) {
-        distancias[grado / GIR + 360 / NUM_SENSORS * 3] = TMR8;
-        TMR8 = 0;
+        distancias[0] = TMR8;
         flags[3] = 1;
+    }
+    else{
+        TMR8 = 0;
     }
     INTCON2bits.INT3EP = !INTCON2bits.INT3EP;
     T8CONbits.TON = INTCON2bits.INT3EP;

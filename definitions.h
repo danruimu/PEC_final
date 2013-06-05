@@ -5,9 +5,9 @@
 
 #define ME_COMES_LOS_HUEVOS 1
 /* indefinido para mover el motor */
-#define TIME1_TRIGGER_MOTOR  0x7FFF
+#define TIME1_TRIGGER_MOTOR  42
 /* 10us para activar el ultrasonido */
-#define TIME1_TRIGGER_SENSOR 5
+#define TIME1_TRIGGER_SENSOR 37 //psk 1
 /* Tiempo necesario para decidir si tenemos algo delante o no*/
 #define TIME1_MAX_SENSORS    13875
 /* Máximo valor para los timers 2,4,6,8 */
