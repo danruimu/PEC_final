@@ -188,13 +188,13 @@ void initSensors(void) {
      * RA13 = INT2
      * RA14 = INT3
      * RF6  = INT0 */
-//    TRISA = 0;
+    TRISA = 0;
     ODCAbits.ODCA5 = 1;
     LATAbits.LATA5 = 0;
-//    TRISAbits.TRISA12 = TRISAbits.TRISA13 = TRISAbits.TRISA14 = 1;
-//    TRISF = 0;
-//    TRISFbits.TRISF6 = 1;
-//    TRISBbits.TRISB0 = 0;
+    TRISAbits.TRISA12 = TRISAbits.TRISA13 = TRISAbits.TRISA14 = 1;
+    TRISF = 0;
+    TRISFbits.TRISF6 = 1;
+    TRISBbits.TRISB0 = 0;
 }
 
 /******************************************************************************/
@@ -204,9 +204,9 @@ void initSensors(void) {
 /* <Initialize variables in user.h and insert code for user algorithms.> */
 
 void InitApp(void) {
-//    initInterrupts();
-//
-//    initTimers();
+    initInterrupts();
+
+    initTimers();
 
     initSensors();
 }
@@ -216,20 +216,19 @@ void moveMotor(unsigned int grade) {
 }
 
 void Loop(void) {
-//    T1CONbits.TON = 1;
-//    TRISBbits.TRISB0 = 0;
-//    TRISFbits.TRISF4 = 0;
-////    TRISAbits.TRISA2 = 0;
-////    TRISAbits.TRISA5 = 0;
-//    TRISAbits.TRISA14 = 1;
-//    TRISDbits.TRISD0 = 0;
-//    PORTBbits.RB0 = 1;
-//    PORTFbits.RF4 = 1;
-//    PORTAbits.RA2 = 1;
-//    PORTAbits.RA5 = 1;
-//    PORTDbits.RD0 = 1;
+    T1CONbits.TON = 1;
+    TRISBbits.TRISB0 = 0;
+    TRISFbits.TRISF4 = 0;
+    TRISAbits.TRISA2 = 0;
+    TRISAbits.TRISA14 = 1;
+    TRISDbits.TRISD0 = 0;
+    PORTBbits.RB0 = 1;
+    PORTFbits.RF4 = 1;
+    PORTAbits.RA2 = 1;
+    PORTDbits.RD0 = 1;
+
+    // Open-drain, draining (0 at trigger sensor)
     TRISAbits.TRISA5 = 1;
-//    PORTAbits.RA5 = 0;
 
     //ra14 echo
     //ra5  trigger

@@ -156,13 +156,15 @@ void ponMotor() {
 void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
     T1CONbits.TON = 0;
     IFS0bits.T1IF = 0;
+    
+    // Open-drain, not draining (1 at trigger sensor)
+    TRISAbits.TRISA5 = 0;
 
     switch (modoTimer1) {
         case MOTOR:
             modoTimer1 = TRIGGER;
             PR1 = TIME1_TRIGGER_SENSOR;
             T1CONbits.TCKPS = 1;
-//            PORTAbits.RA5 = 0;
             PORTBbits.RB0 = 1;
             PORTFbits.RF4 = 0;
             PORTAbits.RA2 = 0;
@@ -172,7 +174,6 @@ void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
             modoTimer1 = ESPERA;
             T1CONbits.TCKPS = 3;
             PR1 = MAX_TIMER_SENS;
-           // PORTAbits.RA5 = 0;
             PORTBbits.RB0 = 0;
             PORTFbits.RF4 = 1;
             PORTAbits.RA2 = 0;
