@@ -165,6 +165,10 @@ void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
             modoTimer1 = TRIGGER;
             PR1 = TIME1_TRIGGER_SENSOR;
             T1CONbits.TCKPS = 1;
+    
+	    //Ponemos un 1 en el puerto trigger del sensor para activarlo
+	    TRISAbits.TRISA5 = 0;
+
             PORTBbits.RB0 = 1;
             PORTFbits.RF4 = 0;
             PORTAbits.RA2 = 0;
@@ -174,6 +178,10 @@ void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
             modoTimer1 = ESPERA;
             T1CONbits.TCKPS = 3;
             PR1 = MAX_TIMER_SENS;
+
+	    //Ponemos un 0 en el puerto trigger del sensor, ya está activo
+	    TRISAbits.TRISA5 = 1;
+
             PORTBbits.RB0 = 0;
             PORTFbits.RF4 = 1;
             PORTAbits.RA2 = 0;
