@@ -64,16 +64,19 @@ void initInterrupts(void) {
 
     /* Set the highest priority for the timers and a little less one for the  */
     /* external ones */
+    /* We have to take a deeper look at the ports we are using to read "echo" */
+    /* port from sensor. We have to be sure that input port support 5V signals*/
     IPC0bits.INT0IP = 6;
     IPC5bits.INT1IP = 6;
     IPC7bits.INT2IP = 6;
     IPC13bits.INT3IP = 6;
 
-    IPC0bits.T1IP = 7;
-    IPC1bits.T2IP = 7;
-    IPC6bits.T4IP = 7;
-    IPC11bits.T6IP = 7;
-    IPC12bits.T8IP = 7;
+    IPC0bits.T1IP = 7;	//trigger and max dist interrupt
+    IPC1bits.T2IP = 7;	//trigger interrupt for ultrasound sensor 0
+    IPC6bits.T4IP = 7;	//trigger interrupt for ultrasound sensor 1
+    IPC11bits.T6IP = 7;	//trigger interrupt for ultrasound sensor 2
+    IPC12bits.T8IP = 7;	//trigger interrupt for ultrasound sensor 3
+
 
     /* Clear all interrupts flags */
     IFS0 = 0;
