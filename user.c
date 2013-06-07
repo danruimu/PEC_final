@@ -20,6 +20,7 @@
 #include "definitions.h"
 #include "interrupts.h"
 
+
 //When one access thus vectors one ought to divide the angles one wants to
 //consult the value of between 15
 double sinus[360 / GIR] = {0.0, 0.25881904510252074, 0.49999999999999994, 0.7071067811865475, 0.8660254037844386, 0.9659258262890683, 1.0, 0.9659258262890683, 0.8660254037844387, 0.7071067811865476, 0.49999999999999994, 0.258819045102521, 1.2246467991473532E-16, -0.25881904510252035, -0.5000000000000001, -0.7071067811865475, -0.8660254037844385, -0.9659258262890683, -1.0, -0.9659258262890682, -0.8660254037844386, -0.7071067811865477, -0.5000000000000004, -0.2588190451025207};
@@ -71,11 +72,11 @@ void initInterrupts(void) {
     IPC7bits.INT2IP = 6;
     IPC13bits.INT3IP = 6;
 
-    IPC0bits.T1IP = 7;	//trigger and max dist interrupt
-    IPC1bits.T2IP = 7;	//trigger interrupt for ultrasound sensor 0
-    IPC6bits.T4IP = 7;	//trigger interrupt for ultrasound sensor 1
-    IPC11bits.T6IP = 7;	//trigger interrupt for ultrasound sensor 2
-    IPC12bits.T8IP = 7;	//trigger interrupt for ultrasound sensor 3
+    IPC0bits.T1IP = 7; //trigger and max dist interrupt
+    IPC1bits.T2IP = 7; //trigger interrupt for ultrasound sensor 0
+    IPC6bits.T4IP = 7; //trigger interrupt for ultrasound sensor 1
+    IPC11bits.T6IP = 7; //trigger interrupt for ultrasound sensor 2
+    IPC12bits.T8IP = 7; //trigger interrupt for ultrasound sensor 3
 
 
     /* Clear all interrupts flags */
@@ -192,8 +193,6 @@ void initSensors(void) {
      * RA14 = INT3
      * RF6  = INT0 */
     TRISA = 0;
-    ODCAbits.ODCA5 = 1;
-    LATAbits.LATA5 = 0;
     TRISAbits.TRISA12 = TRISAbits.TRISA13 = TRISAbits.TRISA14 = 1;
     TRISF = 0;
     TRISFbits.TRISF6 = 1;
@@ -231,7 +230,10 @@ void Loop(void) {
     PORTDbits.RD0 = 1;
 
     // Open-drain, draining (0 at trigger sensor)
-    TRISAbits.TRISA5 = 1;
+//    ODCAbits.ODCA5 = 1;
+//    TRISAbits.TRISA5 = 0;
+//    LATAbits.LATA5 = 0;
+
 
     //ra14 echo
     //ra5  trigger
