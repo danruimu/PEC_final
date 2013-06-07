@@ -64,8 +64,8 @@ void initInterrupts(void) {
 
     /* Set the highest priority for the timers and a little less one for the  */
     /* external ones */
-    /* We have to take a deeper look at the ports we are using to read "echo" */
-    /* port from sensor. We have to be sure that input port support 5V signals*/
+    /* TODO We have to take a deeper look at the ports we are using to read from the "echo" */
+    /* port from the sensor. We have to be sure that the input port supports 5V signal */
     IPC0bits.INT0IP = 6;
     IPC5bits.INT1IP = 6;
     IPC7bits.INT2IP = 6;
@@ -248,7 +248,6 @@ void Loop(void) {
 }
 
 /* TODO solo deberá girar los sensores, poner un 1 en RA11 y activar timer1,  */
-
 /* y esperar a que lleguen las interrupciones                                 */
 uint16_t get_sensor(uint16_t id) {
     return 1;
