@@ -19,6 +19,7 @@
 #include "user.h"            /* variables/params used by user.c               */
 #include "definitions.h"
 #include "interrupts.h"
+#include <libpic30.h>
 
 
 //When one access thus vectors one ought to divide the angles one wants to
@@ -100,17 +101,17 @@ void initInterrupts(void) {
     INTCON2bits.INT3EP = 0;
 
     /* Set timers interrupts */
-    IEC0bits.T1IE = 1; //timer 1
-    IEC0bits.T2IE = 1; //timer 2
-    IEC1bits.T4IE = 1; //timer 4
-    IEC2bits.T6IE = 1; //timer 6
-    IEC3bits.T8IE = 1; //timer 8
-
-    /* Set external interrupts */
-    IEC0bits.INT0IE = 1; //external interrupt 0 --> mapped to RF6  (pin 55)
-    IEC1bits.INT1IE = 1; //external interrupt 1 --> mapped to RA12 (pin 18)
-    IEC1bits.INT2IE = 1; //external interrupt 2 --> mapped to RA13 (pin 19)
-    IEC3bits.INT3IE = 1; //external interrupt 3 --> mapped to RA14 (pin 66)
+//    IEC0bits.T1IE = 1; //timer 1
+//    IEC0bits.T2IE = 1; //timer 2
+//    IEC1bits.T4IE = 1; //timer 4
+//    IEC2bits.T6IE = 1; //timer 6
+//    IEC3bits.T8IE = 1; //timer 8
+//
+//    /* Set external interrupts */
+//    IEC0bits.INT0IE = 1; //external interrupt 0 --> mapped to RF6  (pin 55)
+//    IEC1bits.INT1IE = 1; //external interrupt 1 --> mapped to RA12 (pin 18)
+//    IEC1bits.INT2IE = 1; //external interrupt 2 --> mapped to RA13 (pin 19)
+//    IEC3bits.INT3IE = 1; //external interrupt 3 --> mapped to RA14 (pin 66)
 }
 
 /******************************************************************************/
@@ -214,38 +215,36 @@ void InitApp(void) {
 }
 
 void moveMotor(unsigned int grade) {
-    //TODO rutina para mover motores a un grado determinado
+//    TODO rutina para mover motores a un grado determinado
 }
 
 void Loop(void) {
-    T1CONbits.TON = 1;
+//    T1CONbits.TON = 1;
     TRISBbits.TRISB0 = 0;
-    TRISFbits.TRISF4 = 0;
-    TRISAbits.TRISA2 = 0;
+    
     TRISAbits.TRISA14 = 1;
-    TRISDbits.TRISD0 = 0;
-    PORTBbits.RB0 = 1;
-    PORTFbits.RF4 = 1;
-    PORTAbits.RA2 = 1;
-    PORTDbits.RD0 = 1;
-
-    // Open-drain, draining (0 at trigger sensor)
-//    ODCAbits.ODCA5 = 1;
-//    TRISAbits.TRISA5 = 0;
-//    LATAbits.LATA5 = 0;
-
-
-    //ra14 echo
-    //ra5  trigger
-    //PR1 = TIME1_TRIGGER_MOTOR;
+    PORTAbits.RA14 = 0;
+    
+    PR1 = TIME1_TRIGGER_MOTOR;
+    TMR1 = 0;
+    
+    //trigger at RB0
+    //echo at RA14
     while (ME_COMES_LOS_HUEVOS) {
-        //        if (SensorsFinished >= NUM_SENSORS) {
-        //            SensorsFinished = 0;
-        //            ponMotor();
-        //            grado = (grado + GIR) % 90; //si motor demasiado lento hacerlo otra manera
-        //            moveMotor(grado);
-        // Encender timer1
-        //        }
+        PORTBbits.RB0 = 0;
+        __delay_us(10);
+        PORTBbits.RB0 = 1;
+        __delay_us(10);
+        PORTBbits.RB0 = 0;
+        unsigned int aux = 0;
+        unsigned int cont = 0;
+        while(!aux){
+            aux = PORTAbits.RA14;
+        }
+        while(aux) {
+            aux = PORTAbits.RA14;
+            cont++;
+        }
     }
 }
 

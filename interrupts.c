@@ -152,55 +152,36 @@ void ponMotor() {
 }
 
 
-unsigned char pene = 0;
+unsigned char pene = 1;
 
 /* Timer 1 interrupt service routine */
 void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt(void) {
     T1CONbits.TON = 0;
     IFS0bits.T1IF = 0;
-    
-    // Open-drain, not draining (1 at trigger sensor)
-    TRISAbits.TRISA5 = pene;
-    pene = !pene;
 
-    PR1 = 0xFFFF;
-//
-//    switch (modoTimer1) {
-//        case MOTOR:
-//            modoTimer1 = TRIGGER;
-//            PR1 = TIME1_TRIGGER_SENSOR;
-//            T1CONbits.TCKPS = 1;
-//
-//	    //Ponemos un 1 en el puerto trigger del sensor para activarlo
-////	    TRISAbits.TRISA5 = 0;
-//
-//            PORTBbits.RB0 = 1;
-//            PORTFbits.RF4 = 0;
-//            PORTAbits.RA2 = 0;
-//            PORTDbits.RD0 = 0;
-//            break;
-//        case TRIGGER:
-//            modoTimer1 = ESPERA;
-//            T1CONbits.TCKPS = 3;
-//            PR1 = MAX_TIMER_SENS;
-//
-//	    //Ponemos un 0 en el puerto trigger del sensor, ya estÃ¡ activo
-//	    TRISAbits.TRISA5 = 1;
-//
-//            PORTBbits.RB0 = 0;
-//            PORTFbits.RF4 = 1;
-//            PORTAbits.RA2 = 0;
-//            PORTDbits.RD0 = 0;
-//            break;
-//        case ESPERA:
-//            modoTimer1 = MOTOR;
-//            PR1 = MAX_TIMER_SENS;
-//            PORTBbits.RB0 = 1;
-//            PORTFbits.RF4 = 1;
-//            PORTAbits.RA2 = 1;
-//            PORTDbits.RD0 = 1;
-//            break;
-//    }
+    switch (modoTimer1) {
+        case MOTOR:
+            modoTimer1 = TRIGGER;
+            PR1 = TIME1_TRIGGER_SENSOR;
+            T1CONbits.TCKPS = 1;
+
+            //dejamos pasar por el transistor
+            PORTBbits.RB0 = 1;
+            break;
+        case TRIGGER:
+            modoTimer1 = ESPERA;
+            T1CONbits.TCKPS = 3;
+            PR1 = MAX_TIMER_SENS;
+
+            //Ponemos un 0 en el puerto trigger del sensor, ya está activo
+            PORTBbits.RB0 = 0;
+
+            break;
+        case ESPERA:
+            modoTimer1 = MOTOR;
+            PR1 = MAX_TIMER_SENS;
+            break;
+    }
     TMR1 = 0;
     T1CONbits.TON = 1;
 }
@@ -234,11 +215,12 @@ void __attribute__((interrupt, auto_psv)) _T6Interrupt(void) {
 
 /* Timer 8 interrupt service routine */
 void __attribute__((interrupt, auto_psv)) _T8Interrupt(void) {
-    IFS3bits.T8IF = 0;
     T8CONbits.TON = 0;
+    IFS3bits.T8IF = 0;
     TMR8 = 0;
     INTCON2bits.INT3EP = 0;
     dist8 = MAX_DIST;
+    flags[3] = 1;
 }
 
 /* External 0 interrupt service routine */
@@ -284,17 +266,21 @@ void __attribute__((interrupt, auto_psv)) _INT2Interrupt(void) {
 }
 
 //ECHO
+
 /* External 3 interrupt service routine */
 void __attribute__((interrupt, auto_psv)) _INT3Interrupt(void) {
     IFS3bits.T8IF = 0;
     IFS3bits.INT3IF = 0;
+
+    // Si interrupción en flanco descendente, cogemos el valor
     if (INTCON2bits.INT3EP) {
+        T8CONbits.TON = 0;
         distancias[0] = TMR8;
-        flags[3] = 1;
-    }
-    else{
         TMR8 = 0;
+        flags[3] = 1;
+    } else {    // si flanco ascendente, nos ponemos a contar
+        TMR8 = 0;
+        T8CONbits.TON = 1;
     }
     INTCON2bits.INT3EP = !INTCON2bits.INT3EP;
-    T8CONbits.TON = INTCON2bits.INT3EP;
 }
