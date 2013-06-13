@@ -16,10 +16,14 @@
 
 #include <stdint.h>          /* For uint16_t definition                       */
 #include <stdbool.h>         /* For true/false definition                     */
+#include <stdio.h>
 #include "user.h"            /* variables/params used by user.c               */
 #include "definitions.h"
 #include "interrupts.h"
 #include <libpic30.h>
+#include <delay.h>
+#include <timer.h>
+
 
 
 //When one access thus vectors one ought to divide the angles one wants to
@@ -220,6 +224,8 @@ void moveMotor(unsigned int grade) {
 
 void Loop(void) {
 //    T1CONbits.TON = 1;
+    unsigned int cont = 0;
+    double tiempo,distancia;
     TRISBbits.TRISB0 = 0;
     
     TRISAbits.TRISA14 = 1;
@@ -227,25 +233,49 @@ void Loop(void) {
     
     PR1 = TIME1_TRIGGER_MOTOR;
     TMR1 = 0;
-    
+
+    //leds
+    TRISDbits.TRISD0 = 0;
+    TRISDbits.TRISD9 = 0;
+    TRISDbits.TRISD11 = 0;
+    PORTDbits.RD0 = 0;
+    PORTDbits.RD9 = 0;
+    PORTDbits.RD11 = 0;
+
     //trigger at RB0
     //echo at RA14
     while (ME_COMES_LOS_HUEVOS) {
-        PORTBbits.RB0 = 0;
-        __delay_us(10);
         PORTBbits.RB0 = 1;
-        __delay_us(10);
+        __delay_ms(10);
         PORTBbits.RB0 = 0;
-        unsigned int aux = 0;
-        unsigned int cont = 0;
-        while(!aux){
-            aux = PORTAbits.RA14;
+        __delay_us(20);
+        PORTBbits.RB0 = 1;
+
+        TMR1 = 0;
+        PR1 = 0xFFFF;
+
+        T1CONbits.TCKPS = 1;
+
+        while(!PORTAbits.RA14);
+
+        T1CONbits.TON = 1;
+        while(PORTAbits.RA14);
+        cont = TMR1;
+        T1CONbits.TON = 0;
+        TMR1 = 0;
+
+        distancia = cont/28;
+
+        if(distancia >= 0 && distancia < 50) {
+            PORTDbits.RD0 = 0;
+            PORTDbits.RD11 = 1;
+        } else {
+            PORTDbits.RD0 = 1;
+            PORTDbits.RD11 = 0;
         }
-        while(aux) {
-            aux = PORTAbits.RA14;
-            cont++;
-        }
+        distancia++;
     }
+
 }
 
 /* TODO solo deberá girar los sensores, poner un 1 en RA11 y activar timer1,  */

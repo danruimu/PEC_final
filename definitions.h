@@ -12,6 +12,7 @@
 #define TIME1_MAX_SENSORS    13875
 /* Máximo valor para los timers 2,4,6,8 */
 #define MAX_TIMER_SENS  0xFFFF
+#define VELOCIDAD_SONIDO    343000
 
 #define GIR 15
 #define NUM_SENSORS 4
