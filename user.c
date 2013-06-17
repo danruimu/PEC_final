@@ -224,7 +224,6 @@ void moveMotor(unsigned int grade) {
 
 void Loop(void) {
 //    T1CONbits.TON = 1;
-    unsigned int startedSensors = 0, finishedSensors = 0;
     unsigned int iniTime0, iniTime1, iniTime2, iniTime3;
     unsigned int fiTime0, fiTime1, fiTime2, fiTime3;
     unsigned int time0, time1, time2, time3;
@@ -239,23 +238,23 @@ void Loop(void) {
     TRISDbits.TRISD0 = 0;
     TRISDbits.TRISD9 = 0;
     TRISDbits.TRISD11 = 0;
-    PORTDbits.RD0 = 0;
+    PORTDbits.RD0 = 1;
     PORTDbits.RD9 = 0;
     PORTDbits.RD11 = 0;
 
     //trigger at RB0
-    //echo 0 at RA5
-    //echo 1 at RA15
-    //echo 2 at RA14
-    //echo 3 at RA4
+    //echo 0 at RA15
+    //echo 1 at RA14
+    //echo 2 at RF4 --> not working?
+    //echo 3 at RF5 --> not working?
     TRISAbits.TRISA14 = 1;
     PORTAbits.RA14 = 0;
     TRISAbits.TRISA15 = 1;
     PORTAbits.RA15 = 0;
-    TRISAbits.TRISA4 = 1;
-    PORTAbits.RA4 = 0;
-    TRISAbits.TRISA5 = 1;
-    PORTAbits.RA5 = 0;
+    TRISFbits.TRISF4 = 1;
+    PORTFbits.RF4 = 0;
+    TRISFbits.TRISF5 = 1;
+    PORTFbits.RF5 = 0;
 
     while (ME_COMES_LOS_HUEVOS) {
         TMR1 = 0;
@@ -263,27 +262,7 @@ void Loop(void) {
 
         T1CONbits.TCKPS = 1;
 
-        //Sensor 0 RA5
-        PORTBbits.RB0 = 1;
-        __delay_ms(10);
-        PORTBbits.RB0 = 0;
-        __delay_us(20);
-        PORTBbits.RB0 = 1;
-
-        while(!PORTAbits.RA5);
-        
-        T1CONbits.TON = 1;
-        iniTime0 = 0;
-
-        while(PORTAbits.RA5);
-
-        fiTime0 = TMR1;
-        T1CONbits.TON = 0;
-        TMR1 = 0;
-
-        __delay_us(100);
-
-        //Sensor 1 RA15
+        //Sensor 0 RA15
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -291,19 +270,19 @@ void Loop(void) {
         PORTBbits.RB0 = 1;
 
         while(!PORTAbits.RA15);
-
-        iniTime1 = 0;
+        
         T1CONbits.TON = 1;
+        iniTime0 = 0;
 
         while(PORTAbits.RA15);
 
-        fiTime1 = TMR1;
+        fiTime0 = TMR1;
         T1CONbits.TON = 0;
         TMR1 = 0;
 
         __delay_us(100);
 
-        //Sensor 2 RA14
+        //Sensor 1 RA14
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -312,10 +291,30 @@ void Loop(void) {
 
         while(!PORTAbits.RA14);
 
-        iniTime2 = 0;
+        iniTime1 = 0;
         T1CONbits.TON = 1;
 
         while(PORTAbits.RA14);
+
+        fiTime1 = TMR1;
+        T1CONbits.TON = 0;
+        TMR1 = 0;
+
+        __delay_us(100);
+
+        //Sensor 2 RF4
+        PORTBbits.RB0 = 1;
+        __delay_ms(10);
+        PORTBbits.RB0 = 0;
+        __delay_us(20);
+        PORTBbits.RB0 = 1;
+
+        while(!PORTFbits.RF4);
+
+        T1CONbits.TON = 1;
+        iniTime2 = 0;
+
+        while(PORTFbits.RF4);
 
         fiTime2 = TMR1;
         T1CONbits.TON = 0;
@@ -323,24 +322,25 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 3 RA4
+        //Sensor 2 RF5
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
         __delay_us(20);
         PORTBbits.RB0 = 1;
 
-        while(!PORTAbits.RA4);
+        while(!PORTFbits.RF5);
 
         iniTime3 = 0;
         T1CONbits.TON = 1;
 
-        while(PORTAbits.RA4);
+        while(PORTFbits.RF5);
 
         fiTime3 = TMR1;
         T1CONbits.TON = 0;
         TMR1 = 0;
 
+        __delay_us(100);
 
         time0 = fiTime0 - iniTime0;
         time1 = fiTime1 - iniTime1;
