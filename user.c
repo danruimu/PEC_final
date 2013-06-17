@@ -224,12 +224,13 @@ void moveMotor(unsigned int grade) {
 
 void Loop(void) {
 //    T1CONbits.TON = 1;
-    unsigned int cont = 0;
-    double tiempo,distancia;
-    TRISBbits.TRISB0 = 0;
+    unsigned int startedSensors = 0, finishedSensors = 0;
+    unsigned int iniTime0, iniTime1, iniTime2, iniTime3;
+    unsigned int fiTime0, fiTime1, fiTime2, fiTime3;
+    unsigned int time0, time1, time2, time3;
+    float dist0, dist1, dist2, dist3;
     
-    TRISAbits.TRISA14 = 1;
-    PORTAbits.RA14 = 0;
+    TRISBbits.TRISB0 = 0;
     
     PR1 = TIME1_TRIGGER_MOTOR;
     TMR1 = 0;
@@ -243,37 +244,115 @@ void Loop(void) {
     PORTDbits.RD11 = 0;
 
     //trigger at RB0
-    //echo at RA14
+    //echo 0 at RA5
+    //echo 1 at RA15
+    //echo 2 at RA14
+    //echo 3 at RA4
+    TRISAbits.TRISA14 = 1;
+    PORTAbits.RA14 = 0;
+    TRISAbits.TRISA15 = 1;
+    PORTAbits.RA15 = 0;
+    TRISAbits.TRISA4 = 1;
+    PORTAbits.RA4 = 0;
+    TRISAbits.TRISA5 = 1;
+    PORTAbits.RA5 = 0;
+
     while (ME_COMES_LOS_HUEVOS) {
+        TMR1 = 0;
+        PR1 = 0xFFFF;
+
+        T1CONbits.TCKPS = 1;
+
+        //Sensor 0 RA5
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
         __delay_us(20);
         PORTBbits.RB0 = 1;
 
-        TMR1 = 0;
-        PR1 = 0xFFFF;
-
-        T1CONbits.TCKPS = 1;
-
-        while(!PORTAbits.RA14);
-
+        while(!PORTAbits.RA5);
+        
         T1CONbits.TON = 1;
-        while(PORTAbits.RA14);
-        cont = TMR1;
+        iniTime0 = 0;
+
+        while(PORTAbits.RA5);
+
+        fiTime0 = TMR1;
         T1CONbits.TON = 0;
         TMR1 = 0;
 
-        distancia = cont/28;
+        __delay_us(100);
 
-        if(distancia >= 0 && distancia < 50) {
-            PORTDbits.RD0 = 0;
-            PORTDbits.RD11 = 1;
-        } else {
-            PORTDbits.RD0 = 1;
-            PORTDbits.RD11 = 0;
-        }
-        distancia++;
+        //Sensor 1 RA15
+        PORTBbits.RB0 = 1;
+        __delay_ms(10);
+        PORTBbits.RB0 = 0;
+        __delay_us(20);
+        PORTBbits.RB0 = 1;
+
+        while(!PORTAbits.RA15);
+
+        iniTime1 = 0;
+        T1CONbits.TON = 1;
+
+        while(PORTAbits.RA15);
+
+        fiTime1 = TMR1;
+        T1CONbits.TON = 0;
+        TMR1 = 0;
+
+        __delay_us(100);
+
+        //Sensor 2 RA14
+        PORTBbits.RB0 = 1;
+        __delay_ms(10);
+        PORTBbits.RB0 = 0;
+        __delay_us(20);
+        PORTBbits.RB0 = 1;
+
+        while(!PORTAbits.RA14);
+
+        iniTime2 = 0;
+        T1CONbits.TON = 1;
+
+        while(PORTAbits.RA14);
+
+        fiTime2 = TMR1;
+        T1CONbits.TON = 0;
+        TMR1 = 0;
+
+        __delay_us(100);
+
+        //Sensor 3 RA4
+        PORTBbits.RB0 = 1;
+        __delay_ms(10);
+        PORTBbits.RB0 = 0;
+        __delay_us(20);
+        PORTBbits.RB0 = 1;
+
+        while(!PORTAbits.RA4);
+
+        iniTime3 = 0;
+        T1CONbits.TON = 1;
+
+        while(PORTAbits.RA4);
+
+        fiTime3 = TMR1;
+        T1CONbits.TON = 0;
+        TMR1 = 0;
+
+
+        time0 = fiTime0 - iniTime0;
+        time1 = fiTime1 - iniTime1;
+        time2 = fiTime2 - iniTime2;
+        time3 = fiTime3 - iniTime3;
+        
+        dist0 = ((float)time0)/28.0;
+        dist1 = ((float)time1)/28.0;
+        dist2 = ((float)time2)/28.0;
+        dist3 = ((float)time3)/28.0;
+
+        __delay_ms(500);
     }
 
 }

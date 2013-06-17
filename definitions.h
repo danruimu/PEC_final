@@ -14,6 +14,8 @@
 #define MAX_TIMER_SENS  0xFFFF
 #define VELOCIDAD_SONIDO    343000
 
+#define ACTIVE_SENSORS 4
+
 #define GIR 15
 #define NUM_SENSORS 4
 #define MAX_DIST 401
