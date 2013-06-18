@@ -238,15 +238,19 @@ void Loop(void) {
     TRISDbits.TRISD0 = 0;
     TRISDbits.TRISD9 = 0;
     TRISDbits.TRISD11 = 0;
-    PORTDbits.RD0 = 1;
+    TRISDbits.TRISD10 = 0;
+    TRISDbits.TRISD8 = 0;
+    PORTDbits.RD0 = 1;  //led encendido
     PORTDbits.RD9 = 0;
     PORTDbits.RD11 = 0;
+    PORTDbits.RD10 = 0;
+    PORTDbits.RD8 = 0;
 
     //trigger at RB0
     //echo 0 at RA15
     //echo 1 at RA14
-    //echo 2 at RF4 --> not working?
-    //echo 3 at RF5 --> not working?
+    //echo 2 at RF4
+    //echo 3 at RF5
     TRISAbits.TRISA14 = 1;
     PORTAbits.RA14 = 0;
     TRISAbits.TRISA15 = 1;
@@ -352,7 +356,28 @@ void Loop(void) {
         dist2 = ((float)time2)/28.0;
         dist3 = ((float)time3)/28.0;
 
-        __delay_ms(500);
+        if(dist0 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
+            PORTDbits.RD8 = 0;
+        } else {
+            PORTDbits.RD8 = 1;
+        }
+        if(dist1 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
+            PORTDbits.RD9 = 0;
+        } else {
+            PORTDbits.RD9 = 1;
+        }
+        if(dist2 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
+            PORTDbits.RD10 = 0;
+        } else {
+            PORTDbits.RD10 = 1;
+        }
+        if(dist3 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
+            PORTDbits.RD11 = 0;
+        } else {
+            PORTDbits.RD11 = 1;
+        }
+
+        __delay_ms(400);
     }
 
 }
