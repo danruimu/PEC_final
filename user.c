@@ -235,22 +235,26 @@ void Loop(void) {
     TMR1 = 0;
 
     //leds
+    //led 0 = RD4
+    //led 1 = RD7
+    //led 2 = RD6
+    //led 3 = RD5
     TRISDbits.TRISD0 = 0;
-    TRISDbits.TRISD9 = 0;
-    TRISDbits.TRISD11 = 0;
-    TRISDbits.TRISD10 = 0;
-    TRISDbits.TRISD8 = 0;
+    TRISDbits.TRISD4 = 0;
+    TRISDbits.TRISD5 = 0;
+    TRISDbits.TRISD6 = 0;
+    TRISDbits.TRISD7 = 0;
     PORTDbits.RD0 = 1;  //led encendido
-    PORTDbits.RD9 = 0;
-    PORTDbits.RD11 = 0;
-    PORTDbits.RD10 = 0;
-    PORTDbits.RD8 = 0;
+    PORTDbits.RD4 = 0;
+    PORTDbits.RD5 = 0;
+    PORTDbits.RD6 = 0;
+    PORTDbits.RD7 = 0;
 
     //trigger at RB0
-    //echo 0 at RA15
-    //echo 1 at RA14
-    //echo 2 at RF4
-    //echo 3 at RF5
+    //echo 0 at RF4
+    //echo 1 at RF5
+    //echo 2 at RA14
+    //echo 3 at RA15
     TRISAbits.TRISA14 = 1;
     PORTAbits.RA14 = 0;
     TRISAbits.TRISA15 = 1;
@@ -266,7 +270,7 @@ void Loop(void) {
 
         T1CONbits.TCKPS = 1;
 
-        //Sensor 0 RA15
+        //Sensor 3 RA15
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -286,7 +290,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 1 RA14
+        //Sensor 2 RA14
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -306,7 +310,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 2 RF4
+        //Sensor 0 RF4
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -326,7 +330,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 2 RF5
+        //Sensor 1 RF5
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -357,24 +361,24 @@ void Loop(void) {
         dist3 = ((float)time3)/28.0;
 
         if(dist0 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD8 = 0;
+            PORTDbits.RD4 = 0;
         } else {
-            PORTDbits.RD8 = 1;
+            PORTDbits.RD4 = 1;
         }
         if(dist1 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD9 = 0;
+            PORTDbits.RD7 = 0;
         } else {
-            PORTDbits.RD9 = 1;
+            PORTDbits.RD7 = 1;
         }
         if(dist2 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD10 = 0;
+            PORTDbits.RD6 = 0;
         } else {
-            PORTDbits.RD10 = 1;
+            PORTDbits.RD6 = 1;
         }
         if(dist3 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD11 = 0;
+            PORTDbits.RD5 = 0;
         } else {
-            PORTDbits.RD11 = 1;
+            PORTDbits.RD5 = 1;
         }
 
         __delay_ms(400);
