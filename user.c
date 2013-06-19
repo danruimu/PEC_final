@@ -360,25 +360,22 @@ void Loop(void) {
         dist2 = ((float)time2)/28.0;
         dist3 = ((float)time3)/28.0;
 
+        PORTDbits.RD5 = 0;
+        PORTDbits.RD4 = 0;
+        PORTDbits.RD6 = 0;
+        PORTDbits.RD7 = 0;
+
         if(dist0 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD4 = 0;
-        } else {
-            PORTDbits.RD4 = 1;
+            PORTDbits.RD5 = 1;
         }
         if(dist1 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD7 = 0;
-        } else {
-            PORTDbits.RD7 = 1;
-        }
-        if(dist2 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD6 = 0;
-        } else {
             PORTDbits.RD6 = 1;
         }
+        if(dist2 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
+            PORTDbits.RD4 = 1;
+        }
         if(dist3 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD5 = 0;
-        } else {
-            PORTDbits.RD5 = 1;
+            PORTDbits.RD7 = 1;
         }
 
         __delay_ms(400);
