@@ -228,6 +228,7 @@ void Loop(void) {
     unsigned int fiTime0, fiTime1, fiTime2, fiTime3;
     unsigned int time0, time1, time2, time3;
     float dist0, dist1, dist2, dist3;
+    float dist[4];
     
     TRISBbits.TRISB0 = 0;
     
@@ -355,10 +356,10 @@ void Loop(void) {
         time2 = fiTime2 - iniTime2;
         time3 = fiTime3 - iniTime3;
         
-        dist0 = ((float)time0)/28.0;
-        dist1 = ((float)time1)/28.0;
-        dist2 = ((float)time2)/28.0;
-        dist3 = ((float)time3)/28.0;
+        dist[0] = dist0 = ((float)time0)/28.0;
+        dist[1] = dist1 = ((float)time1)/28.0;
+        dist[2] = dist2 = ((float)time2)/28.0;
+        dist[3] = dist3 = ((float)time3)/28.0;
 
         PORTDbits.RD5 = 0;
         PORTDbits.RD4 = 0;
