@@ -378,7 +378,6 @@ void Loop(void) {
             PORTDbits.RD7 = 1;
         }
 
-        __delay_ms(400);
     }
 
 }
