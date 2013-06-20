@@ -242,14 +242,14 @@ void Loop(void) {
     //led 3 = RD5
     TRISDbits.TRISD0 = 0;
     TRISDbits.TRISD4 = 0;
-    TRISDbits.TRISD5 = 0;
+    TRISDbits.TRISD12 = 0;   //rd5
+    TRISDbits.TRISD13 = 0;   //rd6
     TRISDbits.TRISD6 = 0;
-    TRISDbits.TRISD7 = 0;
     PORTDbits.RD0 = 1;  //led encendido
     PORTDbits.RD4 = 0;
-    PORTDbits.RD5 = 0;
+    PORTDbits.RD12 = 0;
+    PORTDbits.RD13 = 0;
     PORTDbits.RD6 = 0;
-    PORTDbits.RD7 = 0;
 
     //trigger at RB0
     //echo 0 at RF4
@@ -271,7 +271,7 @@ void Loop(void) {
 
         T1CONbits.TCKPS = 1;
 
-        //Sensor 3 RA15
+        //Sensor 0 RA15
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -291,7 +291,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 2 RA14
+        //Sensor 1 RA14
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -311,7 +311,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 0 RF4
+        //Sensor 2 RF4
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -331,7 +331,7 @@ void Loop(void) {
 
         __delay_us(100);
 
-        //Sensor 1 RF5
+        //Sensor 3 RF5
         PORTBbits.RB0 = 1;
         __delay_ms(10);
         PORTBbits.RB0 = 0;
@@ -361,13 +361,13 @@ void Loop(void) {
         dist[2] = dist2 = ((float)time2)/28.0;
         dist[3] = dist3 = ((float)time3)/28.0;
 
-        PORTDbits.RD5 = 0;
+        PORTDbits.RD12 = 0;
         PORTDbits.RD4 = 0;
+        PORTDbits.RD13 = 0;
         PORTDbits.RD6 = 0;
-        PORTDbits.RD7 = 0;
 
         if(dist0 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD5 = 1;
+            PORTDbits.RD12 = 1;
         }
         if(dist1 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
             PORTDbits.RD6 = 1;
@@ -376,9 +376,10 @@ void Loop(void) {
             PORTDbits.RD4 = 1;
         }
         if(dist3 < TAMANYO_ESTANDAR_PENE_ESPANYOL) {
-            PORTDbits.RD7 = 1;
+            PORTDbits.RD13 = 1;
         }
 
+        __delay_ms(100);
     }
 
 }
